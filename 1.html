@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>EmberJack — Premium Casino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #ff7a00;
+  --primary-hover: #ff9533;
+  --bg-main: #080a0f;
+  --bg-panel: #121620;
+  --bg-card: #1a1f2b;
+  --border: #2a3142;
+  --text-main: #f0f4f8;
+  --text-muted: #8b96a8;
+  --green: #00e676;
+  --red: #ff3d00;
+  --gold: #ffd700;
+  --radius: 16px;
+}
+
+/* СВЕТЛАЯ ТЕМА */
+:root[data-theme="light"] {
+  --bg-main: #f0f2f5;
+  --bg-panel: #ffffff;
+  --bg-card: #f8f9fa;
+  --border: #d1d5db;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --green: #16a34a;
+  --red: #dc2626;
+}
+
+/* ПОЛЬЗОВАТЕЛЬСКАЯ ТЕМА */
+:root[data-theme="custom"] {
+  --primary: var(--custom-color);
+  --primary-hover: var(--custom-color-hover);
+  --bg-main: #0a0a0a;
+  --bg-panel: #141414;
+  --bg-card: #1f1f1f;
+  --border: #333;
+  --text-main: #fff;
+  --text-muted: #aaa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  min-height: 100vh; background-color: var(--bg-main); font-family: 'Inter', sans-serif;
+  color: var(--text-main); display: flex; justify-content: center; padding: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* АНИМИРОВАННЫЙ ФОН */
+body::before {
+  content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 122, 0, 0.08), transparent 40%),
+              radial-gradient(circle at 70% 70%, rgba(0, 230, 118, 0.05), transparent 40%);
+  animation: bgSpin 30s linear infinite; z-index: -1; pointer-events: none;
+}
+@keyframes bgSpin { 100% { transform: rotate(360deg); } }
+
+.layout { display: flex; gap: 24px; width: 100%; max-width: 1350px; align-items: flex-start; z-index: 1; }
+.main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+
+/* БОКОВОЕ МЕНЮ */
+.sidebar {
+  width: 290px; background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 20px;
+  position: sticky; top: 20px; height: calc(100vh - 40px); box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  transition: background-color 0.3s;
+}
+
+.online-counter {
+  display: flex; align-items: center; gap: 10px; background: rgba(0, 230, 118, 0.1);
+  border: 1px solid rgba(0, 230, 118, 0.2); padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: var(--text-main);
+}
+.online-dot {
+  width: 8px; height: 8px; background: var(--green); border-radius: 50%;
+  box-shadow: 0 0 10px var(--green); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+
+.sidebar-top { display: flex; flex-direction: column; gap: 10px; }
+.sidebar-menu-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.side-btn {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  background: transparent; border: none; color: var(--text-muted); font-size: 15px; font-weight: 600;
+  border-radius: 10px; cursor: pointer; transition: all 0.2s; text-align: left; width: 100%;
+}
+.side-btn:hover { background: var(--bg-card); color: var(--text-main); transform: translateX(4px); }
+.side-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+.sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
+.side-link {
+  display: flex; align-items: center; gap: 10px; color: var(--text-muted);
+  text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; padding: 10px 12px; border-radius: 8px;
+}
+.side-link:hover { background: var(--bg-card); color: var(--text-main); }
+.side-link svg { width: 18px; height: 18px; fill: currentColor; }
+.side-link.tg:hover { color: #0088cc; }
+
+/* HEADER */
+.header {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+  gap: 15px; padding: 16px 24px; background: var(--bg-panel);
+  border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.logo-container { display: flex; align-items: center; gap: 15px; }
+.logo-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,122,0,0.1); border-radius: 14px; border: 1px solid rgba(255,122,0,0.3); box-shadow: 0 0 15px rgba(255,122,0,0.2); }
+.logo-icon svg { width: 32px; height: 32px; color: var(--primary); filter: drop-shadow(0 0 10px rgba(255,122,0,0.8)); }
+.logo-text { display: flex; flex-direction: column; }
+.logo-title { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 1.5px; line-height: 1; }
+.logo-title span { color: var(--primary); }
+.logo-slogan { font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; margin-top: 6px; text-transform: uppercase; }
+
+.header-right { display: flex; align-items: center; gap: 20px; }
+.balance-area {
+  display: flex; align-items: center; gap: 16px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 14px; padding: 10px 18px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+.balance-area .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+.balance-area b { font-size: 22px; color: var(--text-main); display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.balance-area b.flash { animation: flash 0.5s ease; }
+@keyframes flash { 50% { color: var(--green); transform: scale(1.1); text-shadow: 0 0 15px var(--green); } }
+
+/* VIP PROGRESS BAR */
+.vip-section { display: flex; flex-direction: column; gap: 4px; width: 140px; }
+.vip-title { font-size: 10px; font-weight: 700; color: var(--gold); text-transform: uppercase; display: flex; justify-content: space-between; }
+.vip-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.vip-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ff7a00, #ffd700); transition: width 0.5s ease; border-radius: 3px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+.user-profile-widget { display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; padding: 6px 12px; border-radius: 20px; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
+.user-profile-widget:hover { background: var(--bg-card); border-color: var(--border); }
+.header-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+.header-nickname { font-size: 14px; font-weight: 700; color: var(--text-main); }
+
+.btn {
+  background: linear-gradient(180deg, var(--primary), #d96600); color: #000; border: none; padding: 14px 24px;
+  font-size: 14px; font-weight: 800; border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+  transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 15px rgba(255,122,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,122,0,0.4); }
+.btn:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 2px 10px rgba(255,122,0,0.2); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+.btn.alt { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); box-shadow: none; }
+.btn.alt:hover:not(:disabled) { background: #252d3c; border-color: var(--primary); }
+.btn.green { background: linear-gradient(180deg, #00e676, #00b359); color: #000; box-shadow: 0 4px 15px rgba(0,230,118,0.3); }
+.btn.green:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(0,230,118,0.4); }
+
+/* TABS & PANELS */
+.tabs-container { background: var(--bg-panel); padding: 8px; border-radius: var(--radius); border: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.tabs-container::-webkit-scrollbar { display: none; }
+.tabs { display: flex; gap: 6px; min-width: max-content; }
+.tab { 
+  padding: 12px 22px; background: transparent; border: none; color: var(--text-muted); 
+  font-size: 14px; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.2s; 
+  display: flex; align-items: center; gap: 8px; 
+}
+.tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+.tab.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,122,0,0.3); }
+
+.panel { display: none; animation: fadeIn 0.4s ease; }
+.panel.active { display: flex; flex-direction: column; gap: 20px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } }
+
+.game-container { 
+  background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); 
+  padding: 30px; display: flex; flex-direction: column; gap: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); 
+}
+.game-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+.game-header h2 { font-size: 20px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+.badge { background: rgba(255,122,0,0.15); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255,122,0,0.3); }
+
+.controls-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+.control-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 150px; }
+.control-group label { font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.input-box { background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; padding: 0 18px; transition: border-color 0.2s, box-shadow 0.2s; }
+.input-box:focus-within { border-color: var(--primary); box-shadow: 0 0 15px rgba(255,122,0,0.15); }
+.input-box input { background: transparent; border: none; color: var(--text-main); font-size: 18px; font-weight: 800; padding: 16px 0; width: 100%; outline: none; font-family: 'Inter', sans-serif; }
+.input-box span { color: var(--text-muted); font-size: 18px; }
+
+.msg { text-align: center; font-size: 16px; font-weight: 700; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid transparent; }
+.msg.win { color: var(--green); background: rgba(0,230,118,0.1); border-color: rgba(0,230,118,0.2); box-shadow: 0 0 20px rgba(0,230,118,0.1); }
+.msg.lose { color: var(--red); background: rgba(255,61,0,0.1); border-color: rgba(255,61,0,0.2); }
+
+/* SLOTS */
+.reels { display: flex; gap: 20px; justify-content: center; padding: 30px 0; }
+.reel { 
+  width: 120px; height: 120px; background: var(--bg-main); border: 3px solid var(--border); 
+  border-radius: 24px; display: flex; align-items: center; justify-content: center; 
+  position: relative; overflow: hidden; transition: all 0.3s; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5); 
+}
+.reel.won { border-color: var(--green); box-shadow: 0 0 30px rgba(0,230,118,0.5), inset 0 0 20px rgba(0,230,118,0.2); transform: scale(1.05); }
+.slot-img { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: transform 0.2s; }
+.reel.won .slot-img { transform: scale(1.15); }
+
+/* DICE & ETC */
+.dice-row { display: flex; gap: 40px; justify-content: center; padding: 30px 0; font-size: 80px; }
+.die { color: var(--text-main); transition: 0.1s; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+.die.roll { animation: shake 0.15s infinite; }
+@keyframes shake { 50% { transform: rotate(15deg) scale(1.1); } }
+
+.wheel-container { position: relative; width: 300px; height: 300px; margin: 0 auto; }
+.wheel-bg { position: absolute; inset: 0; border-radius: 50%; border: 5px solid var(--border); transition: transform 4s cubic-bezier(0.15, 0.85, 0.2, 1); box-shadow: 0 0 40px rgba(0,0,0,0.4); }
+.wheel-center { position: absolute; top: 50%; left: 50%; width: 80px; height: 80px; margin: -40px 0 0 -40px; background: var(--bg-panel); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; border: 4px solid var(--border); z-index: 5; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+.ball { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; background: #fff; border-radius: 50%; box-shadow: 0 0 20px #fff; transition: transform 4s cubic-bezier(0.15, 0.85, 0.2, 1); z-index: 4; }
+
+/* BJ & MINE & CRASH */
+.bj-table { background: #0b1a11; border: 2px solid #143d24; border-radius: 20px; padding: 30px; min-height: 250px; display: flex; flex-direction: column; gap: 30px; box-shadow: inset 0 0 50px rgba(0,0,0,0.6); }
+.bj-hand { display: flex; gap: 12px; align-items: center; min-height: 110px; }
+.card { width: 80px; height: 112px; background: #fff; color: #000; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.5); }
+.card.red { color: #d0021b; }
+.card.back { background: repeating-linear-gradient(45deg, #1c222e 0 12px, #151a23 12px 24px); color: transparent; }
+.mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; max-width: 450px; margin: 0 auto; width: 100%; }
+.mine-tile { aspect-ratio: 1; background: var(--bg-card); border-radius: 14px; border: 2px solid transparent; font-size: 32px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; color: transparent; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.mine-tile:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
+.mine-tile.safe { background: rgba(0,230,118,0.15); border-color: var(--green); color: var(--green); box-shadow: 0 0 20px rgba(0,230,118,0.2); }
+.mine-tile.mine { background: rgba(255,61,0,0.15); border-color: var(--red); color: var(--red); box-shadow: 0 0 20px rgba(255,61,0,0.2); }
+
+.canvas-container { position: relative; width: 100%; height: 300px; background: var(--bg-main); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mult-display { position: absolute; top: 25px; left: 50%; transform: translateX(-50%); font-size: 64px; font-weight: 900; color: var(--text-main); text-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+.mult-display.crashed { color: var(--red); text-shadow: 0 0 30px rgba(255,61,0,0.5); }
+.mult-display.cashed { color: var(--green); text-shadow: 0 0 30px rgba(0,230,118,0.5); }
+
+.hilo-card-display { display: flex; justify-content: center; margin: 40px 0; }
+.hilo-card-display .card { width: 120px; height: 168px; font-size: 48px; }
+.limbo-display { text-align: center; padding: 50px 0; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border); box-shadow: inset 0 0 30px rgba(0,0,0,0.3); }
+.limbo-res { font-size: 80px; font-weight: 900; color: var(--text-main); text-shadow: 0 0 30px rgba(255,255,255,0.1); }
+
+/* RAFFLE */
+.raffle-banner { background: linear-gradient(135deg, rgba(255,122,0,0.2), rgba(255,61,0,0.1)); border: 1px solid var(--primary); border-radius: 24px; padding: 40px; text-align: center; position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(255,122,0,0.15); }
+.raffle-banner::before { content: '🎁'; position: absolute; font-size: 200px; right: -30px; bottom: -50px; opacity: 0.08; transform: rotate(-20deg); }
+.raffle-title { font-size: 32px; font-weight: 900; color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 20px rgba(255,122,0,0.4); }
+.raffle-subtitle { font-size: 15px; color: var(--text-main); margin-bottom: 30px; font-weight: 500; }
+.raffle-timer { font-size: 56px; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: 3px; margin-bottom: 25px; color: #fff; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.raffle-prize-box { display: inline-flex; flex-direction: column; align-items: center; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); padding: 20px 40px; border-radius: 20px; backdrop-filter: blur(10px); }
+.raffle-prize-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+.raffle-prize-val { font-size: 40px; font-weight: 900; color: var(--green); text-shadow: 0 0 20px rgba(0,230,118,0.3); }
+.raffle-info { margin-top: 25px; font-size: 14px; color: var(--text-muted); font-weight: 500; }
+
+.tickets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 25px; }
+.ticket-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: flex; align-items: center; gap: 20px; }
+.ticket-icon { font-size: 40px; }
+.ticket-info h4 { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+.ticket-info b { font-size: 24px; color: var(--text-main); font-weight: 800; }
+
+/* HISTORY & MODALS */
+.history-panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.history-title { font-size: 13px; color: var(--text-muted); font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.history-list { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 5px; }
+.history-item { background: var(--bg-card); border: 1px solid var(--border); padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; display: flex; gap: 8px; white-space: nowrap; }
+.history-item.win { color: var(--green); border-color: rgba(0,230,118,0.3); }
+.history-item.lose { color: var(--red); border-color: rgba(255,61,0,0.3); }
+
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.overlay.open { display: flex; }
+.dialog { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 28px; padding: 35px; width: 100%; max-width: 480px; box-shadow: 0 25px 60px rgba(0,0,0,0.7); animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto; }
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } }
+.dialog h3 { margin-bottom: 25px; text-align: center; font-size: 24px; font-weight: 800; }
+
+/* FORMS & BUTTONS IN MODALS */
+.payment-methods { display: flex; gap: 12px; margin-bottom: 25px; }
+.pm-btn { flex: 1; padding: 16px; background: var(--bg-card); border: 2px solid transparent; border-radius: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-muted); font-weight: 700; transition: 0.2s; }
+.pm-btn:hover { background: #252d3c; }
+.pm-btn.active { background: rgba(255,122,0,0.1); border-color: var(--primary); color: var(--primary); box-shadow: 0 0 20px rgba(255,122,0,0.15); }
+.pm-btn svg { width: 28px; height: 28px; fill: currentColor; }
+.payment-form { display: none; flex-direction: column; gap: 16px; }
+.payment-form.active { display: flex; }
+.quick-amounts { display: flex; gap: 10px; margin-bottom: 12px; }
+.quick-amounts button { flex: 1; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-weight: 700; cursor: pointer; transition: 0.2s; }
+.quick-amounts button:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+.dialog .acts { display: flex; gap: 15px; margin-top: 15px; }
+.dialog .acts .btn { flex: 1; }
+
+/* PROFILE & SETTINGS */
+.profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border); }
+.profile-avatar-wrap { position: relative; width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--primary); overflow: hidden; cursor: pointer; background: var(--bg-card); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(255,122,0,0.3); }
+.profile-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar-wrap .upload-icon { position: absolute; inset: 0; background: rgba(0,0,0,0.6); color: #fff; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; font-size: 28px; }
+.profile-avatar-wrap:hover .upload-icon { opacity: 1; }
+.profile-details .nick-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.profile-details .nick-row input { background: transparent; border: 1px solid transparent; color: var(--text-main); font-size: 22px; font-weight: 800; outline: none; padding: 4px 8px; border-radius: 6px; width: 100%; transition: 0.2s; }
+.profile-details .nick-row input:hover, .profile-details .nick-row input:focus { border-color: var(--border); background: var(--bg-card); }
+.profile-details .id-row { font-size: 13px; color: var(--text-muted); font-family: monospace; background: var(--bg-card); padding: 6px 10px; border-radius: 8px; display: inline-block; margin-right: 8px; }
+
+.deposit-hist-title { font-size: 15px; font-weight: 700; margin-bottom: 15px; color: var(--text-muted); }
+.deposit-hist-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+.deposit-item { display: flex; justify-content: space-between; background: var(--bg-card); padding: 14px 18px; border-radius: 12px; font-size: 15px; border: 1px solid var(--border); }
+
+.settings-group { margin-bottom: 25px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+.settings-label { font-size: 15px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
+.theme-selector { display: flex; gap: 12px; margin-bottom: 12px; }
+.theme-btn { flex: 1; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-panel); color: var(--text-main); cursor: pointer; font-weight: 700; transition: 0.2s; }
+.theme-btn.active { border-color: var(--primary); background: rgba(255,122,0,0.1); color: var(--primary); box-shadow: 0 0 15px rgba(255,122,0,0.2); }
+.toggle-wrap { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.toggle-wrap:last-child { border-bottom: none; padding-bottom: 0; }
+.switch { position: relative; display: inline-block; width: 54px; height: 30px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background: #444; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 4px; background: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background: var(--primary); }
+input:checked + .slider:before { transform: translateX(24px); }
+
+/* LIVE WIN FEED (TOASTS) */
+.live-feed-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; pointer-events: none; }
+.live-toast { 
+  background: var(--bg-panel); border: 1px solid var(--border); padding: 12px 20px; 
+  border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: slideInRight 0.3s ease-out; opacity: 0.95; backdrop-filter: blur(5px);
+  transform: translateX(120%);
+}
+.live-toast.show { transform: translateX(0); transition: transform 0.3s ease-out; }
+.live-toast .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--bg-card); }
+.live-toast .content { font-size: 13px; font-weight: 500; }
+.live-toast .content b { color: var(--text-main); }
+.live-toast .content span { color: var(--green); font-weight: 800; }
+@keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+@media (max-width: 1024px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; top: 0; order: 2; }
+  .main-content { order: 1; }
+  .sidebar-footer { border-top: none; padding-top: 0; }
+}
+@media (max-width: 600px) {
+  .header { flex-direction: column; text-align: center; }
+  .logo-container { flex-direction: column; gap: 10px; }
+  .header-right { width: 100%; justify-content: space-between; flex-direction: column; }
+  .balance-area { width: 100%; justify-content: space-between; }
+  .vip-section { width: 100%; margin-top: 10px; }
+  .reel { width: 80px; height: 80px; }
+  .slot-img { width: 50px; height: 50px; }
+  .payment-methods, .theme-selector { flex-direction: column; }
+  .profile-header { flex-direction: column; text-align: center; }
+  .profile-details .nick-row { justify-content: center; }
+  .raffle-timer { font-size: 36px; }
+  .raffle-title { font-size: 24px; }
+  .live-feed-container { bottom: 10px; right: 10px; left: 10px; }
+  .live-toast { width: 100%; transform: none; margin-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <div class="main-content">
+    <header class="header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L15 9H22L16 14L18 21L12 17L6 21L8 14L2 9H9L12 2Z" fill="currentColor"/>
+            <path d="M12 6L13.5 9.5H17L14.5 12L15.5 16L12 14L8.5 16L9.5 12L7 9.5H10.5L12 6Z" fill="#fff" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <div class="logo-title">EMBER<span>JACK</span></div>
+          <div class="logo-slogan">У нас выигрывают</div>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <!-- VIP Progress -->
+        <div class="vip-section">
+          <div class="vip-title"><span id="vipRank">Бронза</span> <span id="vipProgressText">0 / 5000</span></div>
+          <div class="vip-bar-bg"><div class="vip-bar-fill" id="vipBarFill"></div></div>
+        </div>
+
+        <div class="balance-area">
+          <div>
+            <div class="lbl">Баланс</div>
+            <b><span id="balanceVal">1000</span> 🪙</b>
+          </div>
+          <button class="btn" id="depositBtn">Пополнить</button>
+        </div>
+
+        <div class="user-profile-widget" id="userWidget" style="display: none;">
+          <img src="" class="header-avatar" id="headerAvatar" alt="Avatar">
+          <span class="header-nickname" id="headerNickname"></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="tabs-container">
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="slots">🎰 Слоты</button>
+        <button class="tab" data-tab="dice">🎲 Кости</button>
+        <button class="tab" data-tab="roulette">🎡 Рулетка</button>
+        <button class="tab" data-tab="wheel">🎯 Колесо</button>
+        <button class="tab" data-tab="mine">💎 Шахта</button>
+        <button class="tab" data-tab="bj">🃏 Блэкджек</button>
+        <button class="tab" data-tab="crash">🚀 Crash</button>
+        <button class="tab" data-tab="hilo">🔼 Hi-Lo</button>
+        <button class="tab" data-tab="limbo">📈 Limbo</button>
+        <button class="tab" data-tab="raffle" style="color: var(--gold); font-weight: 900;">🎁 Розыгрыши</button>
+      </nav>
+    </div>
+
+    <!-- RAFFLE -->
+    <section class="panel" id="p-raffle">
+      <div class="game-container">
+        <div class="raffle-banner">
+          <div class="raffle-title">Ежечасный Розыгрыш!</div>
+          <div class="raffle-subtitle">Призовой фонд растет с каждой вашей ставкой в казино</div>
+          <div class="raffle-timer" id="raffleTimer">00:00:00</div>
+          
+          <div class="raffle-prize-box">
+            <div class="raffle-prize-label">Текущий призовой фонд</div>
+            <div class="raffle-prize-val"><span id="rafflePrize">100</span> 🪙</div>
+          </div>
+          <div class="raffle-info">Каждые 100 монет ставок = 1 билет. Чем больше билетов, тем выше шанс победы!</div>
+        </div>
+
+        <div class="tickets-grid">
+          <div class="ticket-card">
+            <div class="ticket-icon">🎫</div>
+            <div class="ticket-info">
+              <h4>Ваши билеты</h4>
+              <b id="raffleTickets">0</b>
+            </div>
+          </div>
+          <div class="ticket-card">
+            <div class="ticket-icon">🪙</div>
+            <div class="ticket-info">
+              <h4>Всего потрачено</h4>
+              <b id="raffleWagered">0</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLOTS -->
+    <section class="panel active" id="p-slots">
+      <div class="game-container">
+        <div class="game-header"><h2>Однорукий бандит</h2><div class="badge">Макс. выигрыш x20</div></div>
+        <div class="reels">
+          <div class="reel" id="r0"></div>
+          <div class="reel" id="r1"></div>
+          <div class="reel" id="r2"></div>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="slotsAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="slotsBtn" style="flex: 1; padding: 18px; font-size: 16px;">Крутить</button>
+        </div>
+        <div class="msg" id="slotsMsg">Собери 3 одинаковых символа</div>
+      </div>
+    </section>
+
+    <!-- DICE -->
+    <section class="panel" id="p-dice">
+      <div class="game-container">
+        <div class="game-header"><h2>Кости</h2></div>
+        <div class="dice-row"><div class="die" id="d0">⚀</div><div class="die" id="d1">⚀</div></div>
+        <div class="controls-row">
+          <div class="control-group" style="flex: 2;">
+            <label>Прогноз</label>
+            <div style="display: flex; gap: 15px;">
+              <button class="btn alt dice-opt active" data-val="low" style="flex:1; padding: 16px;">&lt; 7</button>
+              <button class="btn alt dice-opt" data-val="seven" style="flex:1; padding: 16px;">= 7</button>
+              <button class="btn alt dice-opt" data-val="high" style="flex:1; padding: 16px;">&gt; 7</button>
+            </div>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="diceAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="diceBtn" style="flex: 1; padding: 18px; font-size: 16px;">Бросить</button>
+        </div>
+        <div class="msg" id="diceMsg">Выберите исход</div>
+      </div>
+    </section>
+
+    <!-- ROULETTE -->
+    <section class="panel" id="p-roulette">
+      <div class="game-container">
+        <div class="game-header"><h2>Европейская рулетка</h2></div>
+        <div class="wheel-container">
+          <div class="wheel-bg" id="wheel"></div>
+          <div class="wheel-center" id="wcenter">—</div>
+          <div class="ball" id="ball"></div>
+        </div>
+        <div class="controls-row" style="justify-content: center; flex-wrap: wrap; gap: 10px;">
+          <button class="btn alt roulette-opt active" data-val="red" style="color: #ff3d00; padding: 12px 20px;">Красное</button>
+          <button class="btn alt roulette-opt" data-val="black" style="color: #fff; padding: 12px 20px;">Черное</button>
+          <button class="btn alt roulette-opt" data-val="even" style="padding: 12px 20px;">Чет</button>
+          <button class="btn alt roulette-opt" data-val="odd" style="padding: 12px 20px;">Нечет</button>
+          <button class="btn alt roulette-opt" data-val="zero" style="padding: 12px 20px;">Зеро (x35)</button>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="rouletteAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="rouletteBtn" style="flex: 1; padding: 18px; font-size: 16px;">Крутить</button>
+        </div>
+        <div class="msg" id="rouletteMsg">Выберите сектор</div>
+      </div>
+    </section>
+
+    <!-- WHEEL -->
+    <section class="panel" id="p-wheel">
+      <div class="game-container">
+        <div class="game-header"><h2>Колесо Фортуны</h2></div>
+        <div class="wheel-container">
+          <div class="wheel-ptr" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 30px; color: var(--primary); z-index: 10;">▼</div>
+          <div class="wheel-bg" id="wf"></div>
+          <div class="wheel-center" id="wfHub">SPIN</div>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="wheelAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="wheelBtn" style="flex: 1; padding: 18px; font-size: 16px;">Крутить</button>
+        </div>
+        <div class="msg" id="wheelMsg">Множители: 0x - 5x</div>
+      </div>
+    </section>
+
+    <!-- MINES -->
+    <section class="panel" id="p-mine">
+      <div class="game-container">
+        <div class="game-header">
+          <h2>Шахта</h2>
+          <div style="font-size: 14px; color: var(--text-muted); font-weight: 600;">Кф: <b id="mineMult" style="color:var(--text-main)">1.00x</b> | Выигрыш: <b id="minePayout" style="color:var(--green)">0</b></div>
+        </div>
+        <div class="mines-grid" id="mineGrid"></div>
+        <div class="controls-row">
+          <div class="control-group" style="flex: 0.5;">
+            <label>Мин</label>
+            <div class="input-box"><input type="number" id="mineCount" value="3" min="1" max="20"></div>
+          </div>
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="mineAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="mineStart" style="flex: 1; padding: 18px;">Играть</button>
+          <button class="btn green" id="mineCash" style="flex: 1; padding: 18px;" disabled>Забрать</button>
+        </div>
+        <div class="msg" id="mineMsg">Открывайте безопасные клетки</div>
+      </div>
+    </section>
+
+    <!-- BLACKJACK -->
+    <section class="panel" id="p-bj">
+      <div class="game-container">
+        <div class="game-header"><h2>Блэкджек 21</h2></div>
+        <div class="bj-table">
+          <div>
+            <div class="bj-info" style="display:flex; justify-content:space-between; color:#6ba883; font-size:15px; font-weight:700; margin-bottom: 10px;"><span>Дилер</span><span id="dealerTotal">0</span></div>
+            <div class="bj-hand" id="dealerCards"></div>
+          </div>
+          <div>
+            <div class="bj-info" style="display:flex; justify-content:space-between; color:#6ba883; font-size:15px; font-weight:700; margin-bottom: 10px;"><span>Вы</span><span id="playerTotal">0</span></div>
+            <div class="bj-hand" id="playerCards"></div>
+          </div>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="bjAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn" id="bjDeal" style="flex: 1; padding: 18px;">Раздать</button>
+          <button class="btn alt" id="bjHit" style="flex: 1; padding: 18px;" disabled>Взять</button>
+          <button class="btn alt" id="bjStand" style="flex: 1; padding: 18px;" disabled>Хватит</button>
+        </div>
+        <div class="msg" id="bjMsg">Сделайте ставку</div>
+      </div>
+    </section>
+
+    <!-- CRASH -->
+    <section class="panel" id="p-crash">
+      <div class="game-container">
+        <div class="game-header"><h2>Crash</h2></div>
+        <div class="canvas-container">
+          <canvas id="crashCanvas"></canvas>
+          <div class="mult-display" id="crashMult">1.00x</div>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="crashAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn green" id="crashBtn" style="flex: 1; padding: 18px; font-size: 16px;">Забрать / Старт</button>
+        </div>
+        <div class="msg" id="crashMsg">Успейте забрать до краша</div>
+      </div>
+    </section>
+
+    <!-- HI-LO -->
+    <section class="panel" id="p-hilo">
+      <div class="game-container">
+        <div class="game-header"><h2>Hi-Lo (Больше/Меньше)</h2><div class="badge">Кф: <span id="hiloMult">1.90x</span></div></div>
+        <div class="hilo-card-display" id="hiloCurrentCard"></div>
+        <div class="controls-row">
+          <button class="btn alt" id="hiloLower" style="flex: 1; padding: 20px; font-size: 18px;">Меньше ⬇</button>
+          <button class="btn" id="hiloHigher" style="flex: 1; padding: 20px; font-size: 18px;">Больше ⬆</button>
+        </div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="hiloAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+          <button class="btn alt" id="hiloNew" style="flex: 1; padding: 18px;">Новая игра</button>
+        </div>
+        <div class="msg" id="hiloMsg">Угадайте, будет ли следующая карта больше или меньше</div>
+      </div>
+    </section>
+
+    <!-- LIMBO -->
+    <section class="panel" id="p-limbo">
+      <div class="game-container">
+        <div class="game-header"><h2>Limbo</h2></div>
+        <div class="limbo-display"><div class="limbo-res" id="limboResult">1.00x</div></div>
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Целевой Кф</label>
+            <div class="input-box"><input type="number" id="limboTarget" value="2.00" step="0.1" min="1.01"><span>x</span></div>
+          </div>
+          <div class="control-group">
+            <label>Ставка</label>
+            <div class="input-box"><input type="number" id="limboAmount" value="50" min="1"><span>🪙</span></div>
+          </div>
+        </div>
+        <button class="btn" id="limboBtn" style="padding: 18px; font-size: 16px;">Сделать ставку</button>
+        <div class="msg" id="limboMsg">Установите цель и играйте</div>
+      </div>
+    </section>
+
+    <div class="history-panel">
+      <div class="history-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color: var(--primary);"><path d="M12 2L15 9H22L16 14L18 21L12 17L6 21L8 14L2 9H9L12 2Z" fill="currentColor"/></svg>
+        Последние ставки
+      </div>
+      <div class="history-list" id="historyList"><div class="history-item">Ожидание ставок...</div></div>
+    </div>
+
+  </div>
+
+  <!-- САЙДБАР -->
+  <aside class="sidebar">
+    <div class="online-counter">
+      <div class="online-dot"></div>
+      <span>Онлайн: <span id="onlineCount">128</span></span>
+    </div>
+
+    <div class="sidebar-top">
+      <div class="sidebar-menu-title">Меню</div>
+      
+      <button class="side-btn" id="dailyBonusBtn" style="background: rgba(255,122,0,0.1); border: 1px solid rgba(255,122,0,0.3); color: var(--primary); margin-bottom: 5px;">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Бонус дня
+      </button>
+
+      <button class="side-btn" id="openProfileBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Профиль
+      </button>
+      <button class="side-btn" id="openSettingsBtn">
+        <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+        Настройки
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-menu-title">Поддержка</div>
+      <a href="mailto:miu742h@yandex.ru" class="side-link">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        miu742h@yandex.ru
+      </a>
+      <a href="https://t.me/RafSim1ns" target="_blank" rel="noopener noreferrer" class="side-link tg">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+        t.me/RafSim1ns
+      </a>
+    </div>
+  </aside>
+
+</div>
+
+<!-- LIVE FEED -->
+<div class="live-feed-container" id="liveFeed"></div>
+
+<!-- МОДАЛКА: ПОПОЛНЕНИЕ -->
+<div class="overlay" id="depositOverlay">
+  <div class="dialog">
+    <h3>Касса</h3>
+    <div class="payment-methods">
+      <button class="pm-btn active" data-method="card"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>Карта</button>
+      <button class="pm-btn" data-method="sbp"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>СБП</button>
+      <button class="pm-btn" data-method="crypto"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>Крипта</button>
+    </div>
+    <div class="payment-form active" id="form-card">
+      <div class="input-box"><input type="text" placeholder="0000 0000 0000 0000" maxlength="19"></div>
+      <div style="display: flex; gap: 10px;">
+        <div class="input-box" style="flex: 1;"><input type="text" placeholder="MM/YY" maxlength="5"></div>
+        <div class="input-box" style="flex: 1;"><input type="password" placeholder="CVV" maxlength="3"></div>
+      </div>
+    </div>
+    <div class="payment-form" id="form-sbp">
+      <div class="input-box"><input type="tel" placeholder="+7 (999) 000-00-00"></div>
+    </div>
+    <div class="payment-form" id="form-crypto">
+      <div class="input-box">
+        <select style="width:100%; background:transparent; border:none; color:var(--text-main); padding:14px 0; outline:none; font-size:16px;">
+          <option>USDT (TRC20)</option><option>Bitcoin (BTC)</option><option>Ethereum (ETH)</option>
+        </select>
+      </div>
+      <div class="input-box"><input type="text" placeholder="Адрес кошелька"></div>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 18px; background: var(--bg-card); border-radius: 14px; border: 1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <label style="font-size: 13px; color: var(--text-muted); font-weight: 700;">Промокод</label>
+        <button type="button" id="showPromoBtn" style="background: none; border: none; color: var(--primary); font-size: 12px; cursor: pointer; text-decoration: underline; font-weight: 600;">Получить код</button>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="input-box" style="flex: 1; background: var(--bg-panel);">
+          <input type="text" id="promoInput" placeholder="Введите код" style="font-size: 15px; padding: 12px 0;">
+        </div>
+        <button class="btn" id="applyPromoBtn" style="padding: 0 20px; font-size: 14px; border-radius: 10px;">OK</button>
+      </div>
+      <div id="promoStatus" style="font-size: 13px; margin-top: 10px; display: none; font-weight: 600;"></div>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <label style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px; display: block; font-weight: 700;">Сумма пополнения</label>
+      <div class="quick-amounts">
+        <button data-q="500">+500</button><button data-q="1000">+1000</button><button data-q="5000">+5000</button>
+      </div>
+      <div class="input-box"><input type="number" id="depositInput" value="1000" min="1"><span>🪙</span></div>
+    </div>
+    <div class="acts">
+      <button class="btn alt" id="depositCancel">Отмена</button>
+      <button class="btn" id="depositOk">Оплатить</button>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА: АВТОРИЗАЦИЯ -->
+<div class="overlay" id="authOverlay">
+  <div class="dialog">
+    <h3>Вход в профиль</h3>
+    <div style="display: flex; margin-bottom: 25px; border-bottom: 1px solid var(--border);">
+      <div class="auth-tab active" data-form="login" style="flex: 1; padding: 14px; text-align: center; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s;">Вход</div>
+      <div class="auth-tab" data-form="register" style="flex: 1; padding: 14px; text-align: center; font-weight: 700; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s;">Регистрация</div>
+    </div>
+    <form class="auth-form active" id="form-login" style="display: flex; flex-direction: column; gap: 16px;">
+      <div class="input-box"><input type="tel" id="loginPhone" placeholder="Номер телефона" required></div>
+      <div class="input-box"><input type="password" id="loginPass" placeholder="Пароль" required></div>
+      <button type="submit" class="btn" style="margin-top: 10px;">Войти</button>
+    </form>
+    <form class="auth-form" id="form-register" style="display: none; flex-direction: column; gap: 16px;">
+      <div class="input-box"><input type="tel" id="regPhone" placeholder="Номер телефона" required></div>
+      <div class="input-box"><input type="password" id="regPass" placeholder="Пароль" required></div>
+      <button type="submit" class="btn" style="margin-top: 10px;">Зарегистрироваться</button>
+    </form>
+    <button class="btn alt" id="authCancel" style="margin-top: 20px; width: 100%;">Отмена</button>
+  </div>
+</div>
+
+<!-- МОДАЛКА: ПРОФИЛЬ -->
+<div class="overlay" id="profileOverlay">
+  <div class="dialog">
+    <h3>Мой Профиль</h3>
+    <div class="profile-header">
+      <div class="profile-avatar-wrap" onclick="document.getElementById('avatarUpload').click()">
+        <img id="profileAvatar" src="" alt="Avatar">
+        <div class="upload-icon">📷</div>
+        <input type="file" id="avatarUpload" accept="image/*">
+      </div>
+      <div class="profile-details">
+        <div class="nick-row">
+          <input type="text" id="profileNickname" placeholder="Ваш никнейм" maxlength="20">
+          <button class="btn small" id="saveNicknameBtn" style="padding: 8px 16px; font-size: 13px;">OK</button>
+        </div>
+        <div class="id-row">ID: <span id="profileId"></span></div>
+        <div class="id-row">Тел: <span id="profilePhone"></span></div>
+      </div>
+    </div>
+    <div class="deposit-hist-title">История пополнений</div>
+    <div class="deposit-hist-list" id="depositHistList"></div>
+    <div class="acts" style="margin-top: 25px;">
+      <button class="btn alt" id="logoutBtn" style="flex: 1;">Выйти</button>
+      <button class="btn" id="profileCloseBtn" style="flex: 1;">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА: НАСТРОЙКИ -->
+<div class="overlay" id="settingsOverlay">
+  <div class="dialog">
+    <h3>Настройки</h3>
+    
+    <div class="settings-group">
+      <div class="settings-label">Оформление</div>
+      <div class="theme-selector">
+        <button class="theme-btn active" data-theme="dark">Темная</button>
+        <button class="theme-btn" data-theme="light">Светлая</button>
+        <button class="theme-btn" data-theme="custom">Своя</button>
+      </div>
+      <div class="color-picker-wrap" id="customColorWrap" style="display: none; align-items: center; gap: 15px; margin-top: 10px;">
+        <input type="color" id="customColorInput" value="#ff7a00" style="width: 50px; height: 50px; border-radius: 10px; cursor: pointer; border: none; background: none;">
+        <span style="font-size: 14px; color: var(--text-muted); font-weight: 600;">Основной цвет</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-label">Игра</div>
+      <div class="toggle-wrap">
+        <span style="font-weight: 600;">Звуковые эффекты</span>
+        <label class="switch">
+          <input type="checkbox" id="soundToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-wrap">
+        <span style="font-weight: 600;">Плавные анимации</span>
+        <label class="switch">
+          <input type="checkbox" id="animToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-group" style="border-color: rgba(255,61,0,0.4); background: rgba(255,61,0,0.05);">
+      <div class="settings-label" style="color: var(--red);">Опасная зона</div>
+      <button class="btn alt" id="resetDataBtn" style="width: 100%; border-color: var(--red); color: var(--red); font-weight: 800;">Сбросить весь прогресс</button>
+    </div>
+
+    <button class="btn" id="settingsClose" style="width: 100%; margin-top: 10px;">Сохранить</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var $ = function(id){ return document.getElementById(id); };
+function rand(n){ return Math.floor(Math.random() * n); }
+
+// ==================== ИМИТАЦИЯ ОНЛАЙН ====================
+let onlineVal = 128;
+setInterval(() => {
+  let diff = Math.floor(Math.random() * 7) - 3;
+  onlineVal = Math.max(100, onlineVal + diff);
+  $('onlineCount').textContent = onlineVal;
+}, 3000);
+
+// ==================== LIVE WIN FEED ====================
+const botNames = ['Alex_777', 'ProGamer', 'LuckyStrike', 'Сергей', 'NightWolf', 'MegaWin', 'Иван_228', 'CryptoKing', 'Dmitry', 'Vladimir'];
+const games = ['Слоты', 'Кости', 'Рулетка', 'Колесо', 'Шахта', 'Блэкджек', 'Crash', 'Limbo'];
+
+function spawnLiveWin() {
+  const name = botNames[rand(botNames.length)];
+  const game = games[rand(games.length)];
+  const amount = (rand(50) * 100) + 500; // 500 - 5000
+
+  const toast = document.createElement('div');
+  toast.className = 'live-toast';
+  toast.innerHTML = `
+    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${name}" class="avatar" alt="Avatar">
+    <div class="content">
+      <b>${name}</b> выиграл в <b>${game}</b><br>
+      <span>+${amount.toLocaleString()} 🪙</span>
+    </div>
+  `;
+  $('liveFeed').appendChild(toast);
+
+  setTimeout(() => toast.classList.add('show'), 100);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+}
+
+setInterval(() => {
+  if (Math.random() > 0.5) spawnLiveWin();
+}, 8000); // Каждые 8 секунд (50% шанс)
+
+
+// ==================== СИСТЕМА АККАУНТОВ ====================
+let currentUser = JSON.parse(localStorage.getItem('ej_currentUser'));
+
+function updateUserUI() {
+  if (currentUser) {
+    $('userWidget').style.display = 'flex';
+    $('headerAvatar').src = currentUser.avatar;
+    $('headerNickname').textContent = currentUser.nickname || 'Игрок';
+  } else {
+    $('userWidget').style.display = 'none';
+  }
+}
+
+function getFirstUserID() { return '1'; }
+
+$('openProfileBtn').onclick = () => {
+  if (currentUser) openProfileModal();
+  else $('authOverlay').classList.add('open');
+};
+$('userWidget').onclick = openProfileModal;
+
+function openProfileModal() {
+  if (!currentUser) return;
+  $('profileAvatar').src = currentUser.avatar;
+  $('profileNickname').value = currentUser.nickname || 'Игрок';
+  $('profileId').textContent = currentUser.id || 'N/A';
+  $('profilePhone').textContent = currentUser.phone;
+  renderDepositHistory();
+  $('profileOverlay').classList.add('open');
+}
+
+$('profileCloseBtn').onclick = () => $('profileOverlay').classList.remove('open');
+$('saveNicknameBtn').onclick = () => {
+  let newNick = $('profileNickname').value.trim();
+  if (newNick.length < 3) return alert('Никнейм должен быть не менее 3 символов');
+  currentUser.nickname = newNick;
+  localStorage.setItem('ej_currentUser', JSON.stringify(currentUser));
+  localStorage.setItem('ej_user', JSON.stringify(currentUser));
+  updateUserUI();
+  alert('Никнейм обновлен!');
+};
+$('logoutBtn').onclick = () => {
+  localStorage.removeItem('ej_currentUser');
+  currentUser = null;
+  updateUserUI();
+  $('profileOverlay').classList.remove('open');
+};
+
+$('avatarUpload').onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxSize = 150;
+      let width = img.width, height = img.height;
+      if (width > height) { if (width > maxSize) { height *= maxSize / width; width = maxSize; } }
+      else { if (height > maxSize) { width *= maxSize / height; height = maxSize; } }
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      const base64 = canvas.toDataURL('image/jpeg', 0.8);
+      currentUser.avatar = base64;
+      localStorage.setItem('ej_currentUser', JSON.stringify(currentUser));
+      localStorage.setItem('ej_user', JSON.stringify(currentUser));
+      $('profileAvatar').src = base64;
+      updateUserUI();
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+function renderDepositHistory() {
+  if (!currentUser) return;
+  const key = 'ej_deposits_' + currentUser.id;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
+  const list = $('depositHistList');
+  list.innerHTML = '';
+  if (history.length === 0) {
+    list.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 15px; padding: 30px 0;">Пополнений еще не было</div>';
+    return;
+  }
+  history.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'deposit-item';
+    div.innerHTML = `<span style="color: var(--text-muted); font-size: 13px;">${item.date}</span><span style="color: var(--green); font-weight: 800;">+${item.amount} 🪙</span>`;
+    list.appendChild(div);
+  });
+}
+
+// ==================== АВТОРИЗАЦИЯ ====================
+document.querySelectorAll('.auth-tab').forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll('.auth-tab').forEach(t => {
+      t.classList.remove('active');
+      t.style.color = 'var(--text-muted)';
+      t.style.borderBottomColor = 'transparent';
+    });
+    document.querySelectorAll('.auth-form').forEach(f => f.style.display = 'none');
+    
+    tab.classList.add('active');
+    tab.style.color = 'var(--primary)';
+    tab.style.borderBottomColor = 'var(--primary)';
+    $('form-' + tab.dataset.form).style.display = 'flex';
+  };
+});
+$('authCancel').onclick = () => $('authOverlay').classList.remove('open');
+
+$('form-register').onsubmit = (e) => {
+  e.preventDefault();
+  let phone = $('regPhone').value, pass = $('regPass').value;
+  if (phone.length < 5 || pass.length < 4) return alert('Слишком короткие данные');
+  let newId = getFirstUserID();
+  let user = {
+    phone: phone, pass: pass,
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=' + newId,
+    nickname: 'Player_1', id: newId
+  };
+  localStorage.setItem('ej_user', JSON.stringify(user));
+  currentUser = user;
+  localStorage.setItem('ej_currentUser', JSON.stringify(currentUser));
+  updateUserUI();
+  $('authOverlay').classList.remove('open');
+  openProfileModal();
+};
+
+$('form-login').onsubmit = (e) => {
+  e.preventDefault();
+  let phone = $('loginPhone').value, pass = $('loginPass').value;
+  let savedUser = JSON.parse(localStorage.getItem('ej_user'));
+  if (savedUser && savedUser.phone === phone && savedUser.pass === pass) {
+    if (!savedUser.id) savedUser.id = getFirstUserID();
+    currentUser = savedUser;
+    localStorage.setItem('ej_currentUser', JSON.stringify(currentUser));
+    localStorage.setItem('ej_user', JSON.stringify(currentUser));
+    updateUserUI();
+    $('authOverlay').classList.remove('open');
+    openProfileModal();
+  } else {
+    alert('Неверный номер или пароль');
+  }
+};
+updateUserUI();
+
+// ==================== НАСТРОЙКИ ====================
+const root = document.documentElement;
+let soundEnabled = localStorage.getItem('ej_sound') !== 'false';
+let animEnabled = localStorage.getItem('ej_anim') !== 'false';
+
+$('soundToggle').checked = soundEnabled;
+$('soundToggle').onchange = (e) => { soundEnabled = e.target.checked; localStorage.setItem('ej_sound', soundEnabled); };
+
+$('animToggle').checked = animEnabled;
+$('animToggle').onchange = (e) => { 
+  animEnabled = e.target.checked; 
+  localStorage.setItem('ej_anim', animEnabled);
+  document.body.style.transition = animEnabled ? 'background-color 0.3s, color 0.3s' : 'none';
+};
+
+$('openSettingsBtn').onclick = () => $('settingsOverlay').classList.add('open');
+$('settingsClose').onclick = () => $('settingsOverlay').classList.remove('open');
+
+$('resetDataBtn').onclick = () => {
+  if (confirm("Вы уверены? Это удалит ваш аккаунт, баланс и историю.")) {
+    localStorage.clear();
+    location.reload();
+  }
+};
+
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    let theme = btn.dataset.theme;
+    localStorage.setItem('ej_theme', theme);
+    if (theme === 'custom') {
+      $('customColorWrap').style.display = 'flex';
+      let color = localStorage.getItem('ej_customColor') || '#ff7a00';
+      $('customColorInput').value = color;
+      applyCustomTheme(color);
+    } else {
+      $('customColorWrap').style.display = 'none';
+      root.setAttribute('data-theme', theme);
+    }
+  };
+});
+$('customColorInput').oninput = (e) => {
+  let color = e.target.value;
+  localStorage.setItem('ej_customColor', color);
+  applyCustomTheme(color);
+};
+function applyCustomTheme(color) {
+  root.setAttribute('data-theme', 'custom');
+  root.style.setProperty('--custom-color', color);
+  root.style.setProperty('--custom-color-hover', color + 'cc'); 
+}
+let savedTheme = localStorage.getItem('ej_theme') || 'dark';
+document.querySelector(`.theme-btn[data-theme="${savedTheme}"]`).classList.add('active');
+if (savedTheme === 'custom') {
+  $('customColorWrap').style.display = 'flex';
+  let c = localStorage.getItem('ej_customColor') || '#ff7a00';
+  $('customColorInput').value = c;
+  applyCustomTheme(c);
+} else {
+  root.setAttribute('data-theme', savedTheme);
+}
+
+// ==================== ЗВУК ====================
+var actx = null;
+function getAC(){
+  if (!soundEnabled) return null;
+  if (!actx) { var AC = window.AudioContext || window.webkitAudioContext; if (AC) actx = new AC(); }
+  if (actx && actx.state === 'suspended') actx.resume();
+  return actx;
+}
+function beep(f, d, type, vol, delay) {
+  var ctx = getAC(); if (!ctx) return;
+  try {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type || 'sine'; o.frequency.value = f;
+    var t = ctx.currentTime + (delay || 0);
+    o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.001, t);
+    g.gain.linearRampToValueAtTime(vol || 0.05, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.start(t); o.stop(t + d + 0.05);
+  } catch(e){}
+}
+var SFX = {
+  click: () => beep(600, 0.05, 'square', 0.03),
+  win: () => [523,659,784].forEach((f,i) => beep(f, 0.2, 'sine', 0.08, i*0.08)),
+  lose: () => [300,250].forEach((f,i) => beep(f, 0.2, 'sawtooth', 0.05, i*0.1))
+};
+
+// ==================== ИГРОВАЯ ЛОГИКА ====================
+const ICONS = {
+  cherry: `<img src="https://cdn-icons-png.flaticon.com/512/2830/2830280.png" class="slot-img" alt="Cherry">`,
+  lemon: `<img src="https://cdn-icons-png.flaticon.com/512/2830/2830303.png" class="slot-img" alt="Lemon">`,
+  bell: `<img src="https://cdn-icons-png.flaticon.com/512/2830/2830310.png" class="slot-img" alt="Bell">`,
+  diamond: `<img src="https://cdn-icons-png.flaticon.com/512/2830/2830323.png" class="slot-img" alt="Diamond">`,
+  seven: `<img src="https://cdn-icons-png.flaticon.com/512/2830/2830321.png" class="slot-img" alt="Seven">`
+};
+
+var balance = parseInt(localStorage.getItem('ej_bal_v8') || '1000', 10);
+if (isNaN(balance) || balance < 0) balance = 1000;
+
+let totalWagered = parseInt(localStorage.getItem('ej_wagered') || '0', 10);
+let raffleTickets = Math.floor(totalWagered / 100);
+let currentPrize = 0;
+
+var balEl = $('balanceVal');
+
+function syncBalance(){
+  balEl.textContent = balance.toLocaleString('ru-RU');
+  localStorage.setItem('ej_bal_v8', balance);
+}
+function addBalance(v){
+  balance += v; syncBalance();
+  var p = balEl.parentElement;
+  p.classList.add('flash'); setTimeout(() => p.classList.remove('flash'), 500);
+}
+function takeBet(v){
+  v = parseInt(v, 10) || 0;
+  if (v < 1 || balance < v) return false;
+  balance -= v; syncBalance();
+  
+  totalWagered += v;
+  localStorage.setItem('ej_wagered', totalWagered);
+  updateRaffleUI();
+  updateVIP();
+  
+  return true;
+}
+syncBalance();
+
+// VIP Логика
+function updateVIP() {
+  let rank = 'Бронза', nextRank = 5000, current = totalWagered;
+  if (totalWagered >= 100000) { rank = 'Платина'; nextRank = 1000000; }
+  else if (totalWagered >= 20000) { rank = 'Золото'; nextRank = 100000; }
+  else if (totalWagered >= 5000) { rank = 'Серебро'; nextRank = 20000; }
+
+  $('vipRank').textContent = rank;
+  $('vipProgressText').textContent = current.toLocaleString() + ' / ' + nextRank.toLocaleString();
+  
+  let prevRankVal = 0;
+  if (rank === 'Серебро') prevRankVal = 5000;
+  if (rank === 'Золото') prevRankVal = 20000;
+  if (rank === 'Платина') prevRankVal = 100000;
+
+  let percent = ((current - prevRankVal) / (nextRank - prevRankVal)) * 100;
+  $('vipBarFill').style.width = Math.min(100, Math.max(0, percent)) + '%';
+}
+updateVIP();
+
+function setMsg(id, txt, type){
+  var el = $(id); if (!el) return;
+  el.textContent = txt; el.className = 'msg ' + (type || '');
+}
+
+function updateHistory(name, bet, win){
+  var item = document.createElement('div');
+  item.className = 'history-item ' + (win > 0 ? 'win' : 'lose');
+  item.innerHTML = `<b>${name}</b> ${win > 0 ? '+' + win : '-' + bet}`;
+  var list = $('historyList');
+  if (list.children[0].textContent === 'Ожидание ставок...') list.innerHTML = '';
+  list.prepend(item);
+  if (list.children.length > 15) list.lastChild.remove();
+}
+
+var tabsEl = $('tabs');
+tabsEl.addEventListener('click', function(e){
+  var btn = e.target.closest('.tab');
+  if (!btn) return;
+  SFX.click();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  $('p-' + btn.dataset.tab).classList.add('active');
+  if (btn.dataset.tab === 'crash') setTimeout(crashResize, 50);
+});
+
+// ==================== ЕЖЕДНЕВНЫЙ БОНУС ====================
+$('dailyBonusBtn').onclick = () => {
+  let lastClaim = parseInt(localStorage.getItem('ej_last_bonus') || '0', 10);
+  let now = Date.now();
+  let cooldown = 24 * 60 * 60 * 1000;
+
+  if (now - lastClaim < cooldown) {
+    let hoursLeft = Math.ceil((cooldown - (now - lastClaim)) / (1000 * 60 * 60));
+    alert(`Вы уже забирали бонус! Возвращайтесь через ${hoursLeft} ч.`);
+    SFX.lose();
+    return;
+  }
+
+  let reward = rand(400) + 100; // 100-500
+  addBalance(reward);
+  localStorage.setItem('ej_last_bonus', now);
+  updateHistory('Бонус', 0, reward);
+  SFX.win();
+  alert(`🎉 Ежедневный бонус получен: +${reward} 🪙`);
+};
+
+
+// ==================== РОЗЫГРЫШ (RAFFLE) ====================
+function updateRaffleUI() {
+  raffleTickets = Math.floor(totalWagered / 100);
+  $('raffleTickets').textContent = raffleTickets;
+  $('raffleWagered').textContent = totalWagered.toLocaleString('ru-RU');
+  
+  currentPrize = Math.min(5000, Math.max(100, Math.floor(totalWagered * 0.1)));
+  $('rafflePrize').textContent = currentPrize.toLocaleString('ru-RU');
+}
+
+function updateTimer() {
+  const now = new Date();
+  const nextHour = new Date(now);
+  nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+  
+  const diff = nextHour - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  
+  $('raffleTimer').textContent = 
+    String(h).padStart(2, '0') + ':' + 
+    String(m).padStart(2, '0') + ':' + 
+    String(s).padStart(2, '0');
+    
+  if (diff <= 1000 && (now.getMinutes() === 59 && now.getSeconds() === 59)) {
+    if (raffleTickets > 0 && Math.random() < 0.1) {
+      addBalance(currentPrize);
+      updateHistory('Розыгрыш', 0, currentPrize);
+      alert(`🎉 Поздравляем! Вы выиграли в ежечасном розыгрыше: ${currentPrize} 🪙!`);
+      SFX.win();
+    } else {
+      totalWagered = 0;
+      localStorage.setItem('ej_wagered', 0);
+      updateRaffleUI();
+    }
+  }
+}
+
+updateRaffleUI();
+setInterval(updateTimer, 1000);
+updateTimer();
+
+// ==================== ПОПОЛНЕНИЕ И ПРОМОКОДЫ ====================
+var dOverlay = $('depositOverlay');
+$('depositBtn').onclick = () => {
+  SFX.click();
+  dOverlay.classList.add('open');
+  $('promoInput').value = '';
+  $('promoStatus').style.display = 'none';
+  appliedPromoBonus = 0;
+};
+$('depositCancel').onclick = () => { SFX.click(); dOverlay.classList.remove('open'); };
+dOverlay.onclick = (e) => { if (e.target === dOverlay) dOverlay.classList.remove('open'); };
+
+document.querySelectorAll('.pm-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.pm-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.payment-form').forEach(f => f.classList.remove('active'));
+    btn.classList.add('active'); $('form-' + btn.dataset.method).classList.add('active');
+  };
+});
+document.querySelectorAll('.quick-amounts button').forEach(b => {
+  b.onclick = () => $('depositInput').value = b.dataset.q;
+});
+
+let appliedPromoBonus = 0;
+
+function getCurrentPromo() {
+  let promoData = JSON.parse(localStorage.getItem('ej_current_promo'));
+  const now = Date.now();
+  if (!promoData || now > promoData.expiry) {
+    const bonus = Math.floor(Math.random() * 6) + 10;
+    const code = 'BONUS' + Math.floor(Math.random() * 9000 + 1000);
+    promoData = { code: code, bonus: bonus, expiry: now + 3600000 };
+    localStorage.setItem('ej_current_promo', JSON.stringify(promoData));
+  }
+  return promoData;
+}
+
+$('showPromoBtn').onclick = () => {
+  let promo = getCurrentPromo();
+  alert(`Ваш промокод на этот час: ${promo.code}\nДает бонус: +${promo.bonus}% к пополнению.\n(Действует до ${new Date(promo.expiry).toLocaleTimeString()})`);
+};
+
+$('applyPromoBtn').onclick = () => {
+  let inputCode = $('promoInput').value.trim().toUpperCase();
+  let promo = getCurrentPromo();
+  let statusEl = $('promoStatus');
+  statusEl.style.display = 'block';
+  
+  if (inputCode === promo.code) {
+    const usedKey = 'ej_used_promo_' + (currentUser ? currentUser.id : 'guest');
+    const lastUsed = localStorage.getItem(usedKey);
+    if (lastUsed === promo.code) {
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'Этот промокод уже был использован!';
+      appliedPromoBonus = 0; return;
+    }
+    appliedPromoBonus = promo.bonus;
+    statusEl.style.color = 'var(--green)';
+    statusEl.textContent = `Успешно! Бонус +${promo.bonus}% применен.`;
+  } else {
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = 'Неверный или просроченный промокод.';
+    appliedPromoBonus = 0;
+  }
+};
+
+$('depositOk').onclick = function() {
+  var v = parseInt($('depositInput').value, 10);
+  if (!v || v < 100) return setMsg('slotsMsg', 'Мин. 100', 'lose');
+  
+  let bonusAmount = Math.floor(v * (appliedPromoBonus / 100));
+  let totalAmount = v + bonusAmount;
+  this.disabled = true;
+  
+  setTimeout(() => {
+    addBalance(totalAmount); SFX.win(); updateHistory('Депозит', 0, totalAmount);
+    if (currentUser) {
+      const key = 'ej_deposits_' + currentUser.id;
+      const hist = JSON.parse(localStorage.getItem(key) || '[]');
+      hist.unshift({ amount: totalAmount, date: new Date().toLocaleString('ru-RU') });
+      localStorage.setItem(key, JSON.stringify(hist));
+      if (appliedPromoBonus > 0) {
+        const promo = getCurrentPromo();
+        localStorage.setItem('ej_used_promo_' + currentUser.id, promo.code);
+      }
+    }
+    dOverlay.classList.remove('open'); this.disabled = false;
+    if (appliedPromoBonus > 0) {
+      setMsg('slotsMsg', `Пополнено на ${v} + бонус ${bonusAmount} = ${totalAmount} 🪙`, 'win');
+    } else {
+      setMsg('slotsMsg', `Баланс пополнен на ${totalAmount} 🪙`, 'win');
+    }
+    appliedPromoBonus = 0; $('promoStatus').style.display = 'none';
+  }, 1000);
+};
+
+// Общие кнопки выбора
+function bindGroup(className, stateObj, key, defVal) {
+  var btns = document.querySelectorAll('.' + className);
+  btns.forEach(b => {
+    b.onclick = () => {
+      if (b.disabled) return;
+      SFX.click();
+      btns.forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      var v = b.dataset.val;
+      stateObj[key] = isNaN(parseInt(v, 10)) ? v : parseInt(v, 10);
+    };
+    if (b.dataset.val === String(defVal)) b.classList.add('active');
+  });
+}
+
+// 1. СЛОТЫ
+(function(){
+  var SYM = ['cherry', 'lemon', 'bell', 'diamond', 'seven'];
+  var W = [40,30,18,8,4], PAY = {'cherry':2, 'lemon':3, 'bell':5, 'diamond':10, 'seven':20};
+  var busy = false;
+  document.querySelectorAll('.reel').forEach(r => r.innerHTML = ICONS.cherry);
+
+  function pick() { var t = W.reduce((a,b)=>a+b,0), r = Math.random()*t; for (var i=0; i<SYM.length; i++){ if(r < W[i]) return SYM[i]; r -= W[i]; } return SYM[0]; }
+
+  $('slotsBtn').onclick = () => {
+    if (busy) return;
+    var bet = parseInt($('slotsAmount').value, 10);
+    if (!takeBet(bet)) { setMsg('slotsMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    busy = true; $('slotsBtn').disabled = true;
+    var reels = [$('r0'), $('r1'), $('r2')]; reels.forEach(r => r.classList.remove('won'));
+    var res = [pick(), pick(), pick()];
+    var anim = setInterval(() => reels.forEach(r => r.innerHTML = ICONS[SYM[rand(SYM.length)]]), 50);
+    setTimeout(() => {
+      clearInterval(anim); reels.forEach((r, i) => r.innerHTML = ICONS[res[i]]);
+      var win = 0;
+      if (res[0] === res[1] && res[1] === res[2]) { win = bet * PAY[res[0]]; reels.forEach(r => r.classList.add('won')); setMsg('slotsMsg', 'Джекпот! +' + win, 'win'); SFX.win(); }
+      else if (res[0] === res[1] || res[1] === res[2] || res[0] === res[2]) { win = Math.floor(bet * 1.5); setMsg('slotsMsg', 'Почти! +' + win, 'win'); SFX.win(); }
+      else { setMsg('slotsMsg', 'Проигрыш', 'lose'); SFX.lose(); }
+      if (win > 0) addBalance(win); updateHistory('Слоты', bet, win);
+      busy = false; $('slotsBtn').disabled = false;
+    }, 1000);
+  };
+})();
+
+// 2. КОСТИ
+(function(){
+  var FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'], state = { bet: 'low' };
+  bindGroup('dice-opt', state, 'bet', 'low'); var busy = false;
+  $('diceBtn').onclick = () => {
+    if (busy) return;
+    var bet = parseInt($('diceAmount').value, 10);
+    if (!takeBet(bet)) { setMsg('diceMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    busy = true; $('diceBtn').disabled = true;
+    var d0 = $('d0'), d1 = $('d1'); d0.classList.add('roll'); d1.classList.add('roll');
+    var anim = setInterval(() => { d0.textContent = FACES[rand(6)]; d1.textContent = FACES[rand(6)]; }, 50);
+    setTimeout(() => {
+      clearInterval(anim); d0.classList.remove('roll'); d1.classList.remove('roll');
+      var v0 = rand(6)+1, v1 = rand(6)+1, sum = v0+v1;
+      d0.textContent = FACES[v0-1]; d1.textContent = FACES[v1-1];
+      var won = false, mult = 0;
+      if (state.bet === 'low' && sum < 7) { won = true; mult = 1; }
+      if (state.bet === 'high' && sum > 7) { won = true; mult = 1; }
+      if (state.bet === 'seven' && sum === 7) { won = true; mult = 4; }
+      var win = 0;
+      if (won) { win = bet * (mult + 1); addBalance(win); setMsg('diceMsg', 'Выпало ' + sum + '! +' + win, 'win'); SFX.win(); }
+      else { setMsg('diceMsg', 'Выпало ' + sum + '. Проигрыш', 'lose'); SFX.lose(); }
+      updateHistory('Кости', bet, win); busy = false; $('diceBtn').disabled = false;
+    }, 800);
+  };
+})();
+
+// 3. РУЛЕТКА
+(function(){
+  var ORDER = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+  var REDS = {1:1,3:1,5:1,7:1,9:1,12:1,14:1,16:1,18:1,19:1,21:1,23:1,25:1,27:1,30:1,32:1,34:1,36:1};
+  var SEG = 360 / 37, wheelEl = $('wheel'), state = { bet: 'red' };
+  bindGroup('roulette-opt', state, 'bet', 'red');
+  
+  var stops = ORDER.map((n, i) => { var c = n===0?'#00e676':(REDS[n]?'#ff3d00':'#1c222e'); return `${c} ${i*SEG}deg ${(i+1)*SEG}deg`; });
+  wheelEl.style.background = `conic-gradient(${stops.join(',')})`;
+  ORDER.forEach((n, i) => { var angle = i*SEG + SEG/2; var el = document.createElement('div'); el.style.cssText = `position:absolute; top:50%; left:50%; font-size:9px; font-weight:800; color:#fff; transform:rotate(${angle}deg) translateY(-135px)`; el.textContent = n; el.style.transform += ` rotate(-${angle}deg)`; wheelEl.appendChild(el); });
+
+  var busy = false, wheelRot = 0, ballRot = 0;
+  $('rouletteBtn').onclick = () => {
+    if (busy) return;
+    var bet = parseInt($('rouletteAmount').value, 10);
+    if (!takeBet(bet)) { setMsg('rouletteMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    busy = true; $('rouletteBtn').disabled = true; $('wcenter').textContent = '...';
+    var winner = rand(37);
+    wheelRot += 360 * 4 + Math.random() * 360; wheelEl.style.transform = `rotate(${wheelRot}deg)`;
+    var idxW = ORDER.indexOf(winner), localAngle = idxW * SEG + SEG / 2;
+    var delta = ((wheelRot + localAngle - (ballRot % 360)) % 360 + 360) % 360; ballRot += 360 * 5 + delta;
+    $('ball').style.transform = `rotate(${ballRot}deg) translateY(-135px)`;
+    setTimeout(() => {
+      $('wcenter').textContent = winner;
+      var c = winner === 0 ? 'green' : (REDS[winner] ? 'red' : 'black');
+      $('wcenter').style.color = c === 'red' ? '#ff3d00' : c === 'black' ? '#fff' : '#00e676';
+      var won = false;
+      if (state.bet === 'red' && c === 'red') won = true;
+      if (state.bet === 'black' && c === 'black') won = true;
+      if (state.bet === 'even' && winner !== 0 && winner % 2 === 0) won = true;
+      if (state.bet === 'odd' && winner !== 0 && winner % 2 === 1) won = true;
+      if (state.bet === 'zero' && winner === 0) won = true;
+      var win = 0;
+      if (won) { var mult = state.bet === 'zero' ? 35 : 1; win = bet * (mult + 1); addBalance(win); setMsg('rouletteMsg', 'Выигрыш! +' + win, 'win'); SFX.win(); }
+      else { setMsg('rouletteMsg', 'Проигрыш', 'lose'); SFX.lose(); }
+      updateHistory('Рулетка', bet, win); busy = false; $('rouletteBtn').disabled = false;
+    }, 4000);
+  };
+})();
+
+// 4. КОЛЕСО
+(function(){
+  var SEGS = [0, 1, 0, 0.5, 2, 0, 0.5, 5, 0, 1, 0.5, 0], N = SEGS.length, DEG = 360 / N, w = $('wf');
+  var stops = SEGS.map((m, i) => { var c = m===0?'#1c222e':(m>=5?'#00e676':(m>=2?'#ff7a00':(m>=1?'#ffb347':'#c25200'))); return `${c} ${i*DEG}deg ${(i+1)*DEG}deg`; });
+  w.style.background = `conic-gradient(${stops.join(',')})`;
+  SEGS.forEach((m, i) => { var angle = i*DEG + DEG/2; var el = document.createElement('div'); el.style.cssText = `position:absolute; top:50%; left:50%; font-size:14px; font-weight:900; color:#fff; transform:rotate(${angle}deg) translateY(-130px)`; el.textContent = m===0?'0x':m+'x'; el.style.transform += ` rotate(-${angle}deg)`; w.appendChild(el); });
+  
+  var rot = 0, busy = false;
+  $('wheelBtn').onclick = () => {
+    if (busy) return;
+    var bet = parseInt($('wheelAmount').value, 10);
+    if (!takeBet(bet)) { setMsg('wheelMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    busy = true; $('wheelBtn').disabled = true; $('wfHub').textContent = '...';
+    var idx = rand(N), centerAngle = idx*DEG + DEG/2, curMod = ((rot%360)+360)%360, targetMod = ((360-centerAngle)%360+360)%360;
+    var delta = targetMod - curMod; if (delta < 0) delta += 360; rot += 360*4 + delta; w.style.transform = `rotate(${rot}deg)`;
+    setTimeout(() => {
+      var mult = SEGS[idx], win = Math.floor(bet * mult);
+      $('wfHub').textContent = mult + 'x';
+      if (mult > 0) { addBalance(win); setMsg('wheelMsg', 'Множитель ' + mult + 'x! +' + win, 'win'); SFX.win(); }
+      else { setMsg('wheelMsg', '0x. Проигрыш', 'lose'); SFX.lose(); }
+      updateHistory('Колесо', bet, win); busy = false; $('wheelBtn').disabled = false;
+    }, 4100);
+  };
+})();
+
+// 5. ШАХТА
+(function(){
+  var N = 25, state = { count: 3 }, active = false, bet = 0, mines = {}, revealed = {}, grid = $('mineGrid');
+  for (let i=0; i<N; i++) { let b = document.createElement('button'); b.className = 'mine-tile'; b.onclick = () => click(i); grid.appendChild(b); }
+  function comb(n, k){ if(k<0||k>n)return 0; if(k===0||k===n)return 1; k=Math.min(k,n-k); let r=1; for(let i=0;i<k;i++) r=r*(n-i)/(i+1); return r; }
+  function getMult(picks){ if(picks===0)return 1; let survive = comb(N-state.count, picks)/comb(N, picks); return Math.max(1, 0.99/survive); }
+  function count(){ return Object.keys(revealed).length; }
+  function updateUI(){ let m = getMult(count()), pay = active?Math.floor(bet*m):0; $('mineMult').textContent = m.toFixed(2)+'x'; $('minePayout').textContent = pay; $('mineCash').disabled = !active || count()===0; }
+  
+  $('mineStart').onclick = () => {
+    if (active) return;
+    var v = parseInt($('mineAmount').value, 10); state.count = parseInt($('mineCount').value, 10);
+    if (state.count < 1 || state.count > 24) return setMsg('mineMsg', 'Мин 1-24', 'lose');
+    if (!takeBet(v)) { setMsg('mineMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    active = true; bet = v; mines = {}; revealed = {};
+    while (Object.keys(mines).length < state.count) mines[rand(N)] = true;
+    document.querySelectorAll('.mine-tile').forEach(t => { t.className = 'mine-tile'; t.textContent = ''; t.disabled = false; });
+    $('mineStart').disabled = true; $('mineCount').disabled = true; $('mineAmount').disabled = true; updateUI();
+  };
+  function click(i) {
+    if (!active || revealed[i]) return; revealed[i] = true; var tile = grid.children[i];
+    if (mines[i]) {
+      tile.classList.add('mine'); tile.textContent = '💥'; SFX.lose();
+      document.querySelectorAll('.mine-tile').forEach((t, idx) => { if (mines[idx] && idx !== i) { t.classList.add('mine'); t.textContent = '💣'; } t.disabled = true; });
+      setMsg('mineMsg', 'Взрыв! Потеряно ' + bet, 'lose'); updateHistory('Шахта', bet, 0);
+      active = false; $('mineStart').disabled = false; $('mineCount').disabled = false; $('mineAmount').disabled = false; updateUI();
+    } else {
+      tile.classList.add('safe'); tile.textContent = '💎'; SFX.click(); updateUI();
+      if (count() === N - state.count) setTimeout(cashout, 200);
+    }
+  }
+  function cashout() {
+    if (!active) return; var m = getMult(count()), win = Math.floor(bet*m); addBalance(win); SFX.win();
+    setMsg('mineMsg', 'Забрано ' + win, 'win'); updateHistory('Шахта', bet, win);
+    document.querySelectorAll('.mine-tile').forEach((t, idx) => { t.disabled = true; if (mines[idx] && !revealed[idx]) { t.classList.add('mine'); t.textContent = '💣'; } });
+    active = false; $('mineStart').disabled = false; $('mineCount').disabled = false; $('mineAmount').disabled = false; updateUI();
+  }
+  $('mineCash').onclick = cashout;
+})();
+
+// 6. БЛЭКДЖЕК
+(function(){
+  var deck = [], player = [], dealer = [], bet = 0, phase = 'idle';
+  function newDeck() { var ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'], suits = ['♠','♥','♦','♣'], d = []; for (let s of suits) for (let r of ranks) d.push({r,s}); for (let i = d.length-1; i>0; i--) { let j = rand(i+1); [d[i],d[j]] = [d[j],d[i]]; } return d; }
+  function val(hand) { let t=0, a=0; for (let c of hand) { if (c.r==='A') { a++; t+=11; } else if (['J','Q','K'].includes(c.r)) t+=10; else t+=parseInt(c.r,10); } while (t>21&&a>0) { t-=10; a--; } return t; }
+  function render(hide) {
+    let pc = $('playerCards'), dc = $('dealerCards'); pc.innerHTML=''; dc.innerHTML='';
+    player.forEach(c => pc.appendChild(mkCard(c)));
+    dealer.forEach((c,i) => dc.appendChild(mkCard(c, hide && i===1)));
+    $('playerTotal').textContent = val(player);
+    $('dealerTotal').textContent = hide ? (dealer[0]?val([dealer[0]])+'+?':'?') : val(dealer);
+  }
+  function mkCard(c, hidden) { let d = document.createElement('div'); d.className = 'card'; if (c.s==='♥'||c.s==='♦') d.classList.add('red'); if(hidden){d.classList.add('back'); d.innerHTML='?'; return d;} d.innerHTML = `<div>${c.r}</div><div class="s">${c.s}</div>`; return d; }
+  function btns(deal, hit, stand) { $('bjDeal').disabled=!deal; $('bjHit').disabled=!hit; $('bjStand').disabled=!stand; $('bjAmount').disabled=!deal; }
+  function reset() { phase='idle'; btns(true,false,false); }
+
+  $('bjDeal').onclick = () => {
+    if (phase !== 'idle') return; var v = parseInt($('bjAmount').value,10);
+    if (!takeBet(v)) { setMsg('bjMsg', 'Мало монет', 'lose'); return SFX.lose(); }
+    bet = v; deck = newDeck(); player = [deck.pop(), deck.pop()]; dealer = [deck.pop(), deck.pop()];
+    phase = 'player'; render(true); btns(false,true,true); SFX.click();
+    if (val(player) === 21) { btns(false,false,false); setTimeout(doStand, 500); }
+  };
+  $('bjHit').onclick = () => {
+    if (phase !== 'player') return; player.push(deck.pop()); render(true); SFX.click();
+    if (val(player) > 21) { phase = 'dealer'; btns(false,false,false); render(false); setMsg('bjMsg', 'Перебор!', 'lose'); SFX.lose(); updateHistory('Блэкджек', bet, 0); reset(); }
+    else if (val(player) === 21) { btns(false,false,false); setTimeout(doStand, 500); }
+  };
+  $('bjStand').onclick = doStand;
+  function doStand() { if (phase !== 'player') return; phase = 'dealer'; btns(false,false,false); render(false); setTimeout(dealerTurn, 600); }
+  function dealerTurn() { if (val(dealer) < 17) { dealer.push(deck.pop()); render(false); SFX.click(); setTimeout(dealerTurn, 600); } else finish(); }
+  function finish() {
+    let p = val(player), d = val(dealer), win = 0, txt = '';
+    if (d > 21 || p > d) { win = bet*2; txt = 'Победа!'; } else if (p === d) { win = bet; txt = 'Ничья'; } else { txt = 'Проигрыш'; }
+    if (win > 0) { addBalance(win); SFX.win(); } else { SFX.lose(); }
+    setMsg('bjMsg', txt, win>0?'win':'lose'); updateHistory('Блэкджек', bet, win); reset();
+  }
+  reset();
+})();
+
+// 7. CRASH
+var crashResize;
+(function(){
+  var canvas = $('crashCanvas'), ctx = canvas.getContext('2d'), active=false, crashed=false, cashed=false, bet=0, crashPoint=0, currentMult=1, startTime=0, rafId=0;
+  crashResize = () => { let rect = canvas.getBoundingClientRect(); if(!rect.width) return; let dpr = window.devicePixelRatio||1; canvas.width = rect.width*dpr; canvas.height = rect.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); draw(); };
+  function draw() {
+    let w = canvas.getBoundingClientRect().width, h = canvas.getBoundingClientRect().height; if(!w) return; ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle = '#2a3142'; ctx.lineWidth = 1; for(let i=1;i<5;i++){ ctx.beginPath(); ctx.moveTo(0,h*i/5); ctx.lineTo(w,h*i/5); ctx.stroke(); }
+    if(currentMult <= 1) return;
+    let endX = Math.min(w, ((performance.now()-startTime)/10000)*w); ctx.beginPath();
+    for(let i=0; i<=50; i++) { let px = (i/50)*endX, m = Math.exp((px/w)*10), py = h - Math.min(h, Math.log(m)*h/4); if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    let col = crashed?'#ff3d00':(cashed?'#00e676':'#ff7a00'); ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.shadowBlur = 15; ctx.shadowColor = col; ctx.stroke(); ctx.shadowBlur = 0;
+    ctx.lineTo(endX, h); ctx.lineTo(0, h); ctx.fillStyle = col+'20'; ctx.fill();
+  }
+  function loop() {
+    if(!active) return; let el = performance.now()-startTime; currentMult = Math.exp(el/4000); $('crashMult').textContent = currentMult.toFixed(2)+'x';
+    if(currentMult >= crashPoint) { crashed=true; active=false; $('crashMult').textContent=crashPoint.toFixed(2)+'x'; $('crashMult').className='mult-display crashed'; setMsg('crashMsg','Краш! Потеряно '+bet,'lose'); SFX.lose(); updateHistory('Crash',bet,0); $('crashBtn').textContent='Старт'; $('crashBtn').className='btn green'; $('crashAmount').disabled=false; draw(); return; }
+    draw(); rafId = requestAnimationFrame(loop);
+  }
+  $('crashBtn').onclick = () => {
+    if(active) { let win = Math.floor(bet*currentMult); addBalance(win); active=false; cashed=true; $('crashMult').className='mult-display cashed'; setMsg('crashMsg','Забрано '+win+' (x'+currentMult.toFixed(2)+')','win'); SFX.win(); updateHistory('Crash',bet,win); cancelAnimationFrame(rafId); $('crashBtn').textContent='Старт'; $('crashBtn').className='btn green'; $('crashAmount').disabled=false; return; }
+    let v = parseInt($('crashAmount').value,10); if(!takeBet(v)){ setMsg('crashMsg','Мало монет','lose'); return SFX.lose(); }
+    bet=v; crashPoint = Math.max(1, 99/(100-Math.random()*100)); active=true; crashed=false; cashed=false; startTime=performance.now(); currentMult=1; $('crashMult').textContent='1.00x'; $('crashMult').className='mult-display'; $('crashBtn').textContent='Забрать'; $('crashBtn').className='btn'; $('crashAmount').disabled=true; crashResize(); loop();
+  };
+  window.addEventListener('resize', crashResize);
+})();
+
+// 8. HI-LO
+(function(){
+  var ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'], currentCard=null, active=false;
+  function drawRandomCard() { let r = ranks[rand(13)], s = ['♠','♥','♦','♣'][rand(4)]; return {r,s,v:ranks.indexOf(r)+2}; }
+  function renderCard(cardEl, c) { cardEl.innerHTML=''; let d = document.createElement('div'); d.className='card'; if(c.s==='♥'||c.s==='♦')d.classList.add('red'); d.innerHTML=`<div>${c.r}</div><div class="s">${c.s}</div>`; cardEl.appendChild(d); }
+  function calcMult(higher) { if(!currentCard) return 1.9; let v = currentCard.v, w = higher?(14-v):(v-1); if(w===0)return 0; return (13/w).toFixed(2); }
+  function updateUI() { $('hiloHigher').disabled = !active || calcMult(true)===0; $('hiloLower').disabled = !active || calcMult(false)===0; $('hiloNew').disabled = active; $('hiloAmount').disabled = active; }
+  $('hiloNew').onclick = () => { if(active) return; let v = parseInt($('hiloAmount').value,10); if(!takeBet(v)){ setMsg('hiloMsg','Мало монет','lose'); return SFX.lose(); } active=true; currentCard=drawRandomCard(); renderCard($('hiloCurrentCard'),currentCard); $('hiloMult').textContent=calcMult(true)+'x'; updateUI(); };
+  function play(higher) {
+    if(!active) return; let next = drawRandomCard(); renderCard($('hiloCurrentCard'),next);
+    let won = higher?(next.v>currentCard.v):(next.v<currentCard.v);
+    if(next.v === currentCard.v) { addBalance(parseInt($('hiloAmount').value,10)); updateHistory('Hi-Lo',0,0); }
+    else if(won) { let win = Math.floor(parseInt($('hiloAmount').value,10)*calcMult(higher)); addBalance(win); setMsg('hiloMsg','Угадали! +'+win,'win'); SFX.win(); updateHistory('Hi-Lo',parseInt($('hiloAmount').value,10),win); }
+    else { setMsg('hiloMsg','Проигрыш','lose'); SFX.lose(); updateHistory('Hi-Lo',parseInt($('hiloAmount').value,10),0); }
+    active=false; updateUI();
+  }
+  $('hiloHigher').onclick = () => play(true); $('hiloLower').onclick = () => play(false); updateUI();
+})();
+
+// 9. LIMBO
+(function(){
+  $('limboBtn').onclick = () => {
+    let bet = parseInt($('limboAmount').value,10), target = parseFloat($('limboTarget').value);
+    if(target < 1.01) return setMsg('limboMsg','Кф > 1.01','lose'); if(!takeBet(bet)){ setMsg('limboMsg','Мало монет','lose'); return SFX.lose(); }
+    let res = Math.max(1, Math.floor((99/(100-Math.random()*100))*100)/100); $('limboResult').textContent = res.toFixed(2)+'x';
+    if(res >= target) { let win = Math.floor(bet*target); addBalance(win); $('limboResult').style.color='var(--green)'; setMsg('limboMsg','Успех! +'+win,'win'); SFX.win(); updateHistory('Limbo',bet,win); }
+    else { $('limboResult').style.color='var(--red)'; setMsg('limboMsg','Неудача','lose'); SFX.lose(); updateHistory('Limbo',bet,0); }
+  };
+})();
+
+document.addEventListener('click', () => getAC(), { once: true });
+})();
+</script>
+</body>
+</html>
